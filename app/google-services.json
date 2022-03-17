@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "901402710124",
+    "project_id": "shoxgramapp",
+    "storage_bucket": "shoxgramapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901402710124:android:2e5b760dbbfd967032c849",
+        "android_client_info": {
+          "package_name": "com.example.shoxgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901402710124-k635p04c45h10tghg791889b1rgvocl3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5n22InZ1b0AdKU9sIonkamtCSOvj_Mbs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901402710124-k635p04c45h10tghg791889b1rgvocl3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
