@@ -10,6 +10,7 @@ import com.example.shoxgram.adapters.MessageAdapter
 import com.example.shoxgram.databinding.FragmentProfileBinding
 import com.example.shoxgram.databinding.FragmentTabBinding
 import com.example.shoxgram.models.Message
+import com.example.shoxgram.models.Recently
 import com.example.shoxgram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -46,6 +47,8 @@ class ProfileFragment : Fragment() {
     lateinit var firebaseDatabase: FirebaseDatabase
     lateinit var reference: DatabaseReference
     lateinit var messageAdapter: MessageAdapter
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,6 +64,13 @@ class ProfileFragment : Fragment() {
 
         Picasso.get().load(usercha.photoUrl).into(binding.image1)
         binding.namee.text = usercha.displayName
+        if (usercha.online == true){
+            binding.messagee.text = "Online"
+
+        }else{
+            binding.messagee.text = "Offline"
+            binding.messagee.setTextColor(R.color.black!!)
+        }
 
         binding.sendBtn.setOnClickListener {
             val m = binding.sms.text.toString()
@@ -90,6 +100,7 @@ class ProfileFragment : Fragment() {
                     }
                     messageAdapter = MessageAdapter(list,firebaseAuth.currentUser!!.uid)
                     binding.messageRv.adapter = messageAdapter
+                    binding.messageRv.scrollToPosition(list.size -1)
                 }
 
                 override fun onCancelled(error: DatabaseError) {

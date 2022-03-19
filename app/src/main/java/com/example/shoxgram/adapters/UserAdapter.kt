@@ -1,9 +1,11 @@
 package com.example.shoxgram.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoxgram.databinding.FoydalanuvchiBinding
+import com.example.shoxgram.models.Recently
 import com.example.shoxgram.models.User
 import com.squareup.picasso.Picasso
 
@@ -17,10 +19,19 @@ class UserAdapter (var list: List<User>, var onItemClickListner: OnItemClickList
             Picasso.get().load(user.photoUrl).into(foydalanuvchiBinding.image1)
             foydalanuvchiBinding.namee.text = user.displayName
 
+
+            if (user.online == true){
+                foydalanuvchiBinding.online.visibility = View.VISIBLE
+            }else{
+                foydalanuvchiBinding.online.visibility = View.GONE
+            }
+
             foydalanuvchiBinding.root.setOnClickListener {
                 onItemClickListner.onItemClick(user)
             }
         }
+
+
 
     }
 

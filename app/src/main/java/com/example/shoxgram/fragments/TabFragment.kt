@@ -1,19 +1,24 @@
 package com.example.shoxgram.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.shoxgram.R
 import com.example.shoxgram.adapters.UserAdapter
 import com.example.shoxgram.databinding.FragmentTabBinding
+import com.example.shoxgram.models.Message
+import com.example.shoxgram.models.Recently
 import com.example.shoxgram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.lang.StringBuilder
+import kotlin.math.log
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +51,7 @@ class TabFragment : Fragment() {
 
     lateinit var userAdapter: UserAdapter
     var list = ArrayList<User>()
+    var recently = ArrayList<Recently>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,7 +59,7 @@ class TabFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentTabBinding.inflate(layoutInflater,container,false)
 
-        if (categoryID == 1) {
+//        if (categoryID == 1) {
             //chat fragment
             firebaseAuth = FirebaseAuth.getInstance()
             val currentUser = firebaseAuth.currentUser
@@ -66,10 +72,19 @@ class TabFragment : Fragment() {
             val photoUrl = currentUser?.photoUrl
             val uid = currentUser?.uid
 
-            val user = com.example.shoxgram.models.User(email,displayName,phoneNumber,photoUrl.toString(),uid!!)
+            val user = com.example.shoxgram.models.User(email,displayName,phoneNumber,photoUrl.toString(),uid!!,false)
 
 
-            reference.addListenerForSingleValueEvent(object:ValueEventListener{
+        for (recent in recently) {
+            if (recent.sms.isNotEmpty()){
+                Log.d(TAG, "onCreateView: ${recent}")
+            }
+        }
+
+
+//        updateData(email,displayName,phoneNumber,photoUrl,uid,true)
+
+            reference.addValueEventListener(object:ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     list.clear()
                     val filterList = arrayListOf<User>()
@@ -89,6 +104,8 @@ class TabFragment : Fragment() {
                     if (filterList.isEmpty()) {
                         reference.child(uid).setValue(user)
                     }
+
+                    setRecentMessage(list)
 
                     userAdapter = UserAdapter(list, object :UserAdapter.OnItemClickListner{
                         override fun onItemClick(user: User) {
@@ -111,9 +128,55 @@ class TabFragment : Fragment() {
             })
 
 
-        }
+//        }
 
         return binding.root
+    }
+
+    private fun setRecentMessage(list: ArrayList<User>) {
+        for (i in 0 until list.size) {
+            reference.child("${firebaseAuth.currentUser?.uid}/messages/${list[i].uid}")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val messagesss = arrayListOf<Message>()
+                        val children = snapshot.children
+                        for (child in children) {
+                            val value = child.getValue(Message::class.java)
+//                            Log.d(TAG, "onDataChange: ${value!!.message!!.last()}")
+                            if (value!=null){
+                                messagesss.add(value)
+                            }
+                        }
+                        if (messagesss.isNotEmpty()) {
+                            recently.add(
+                                Recently(
+                                    messagesss.last().message!!,
+                                    messagesss.last().date!!
+                                )
+                            )
+                        }else {
+                            recently.add(Recently("",""))
+                        }
+
+                      
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+
+                })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reference.child("${firebaseAuth.currentUser!!.uid}/online").setValue(true)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        reference.child("${firebaseAuth.currentUser!!.uid}/online").setValue(false)
     }
 
     companion object {
