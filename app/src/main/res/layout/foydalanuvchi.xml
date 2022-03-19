@@ -6,24 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-<!--    <androidx.cardview.widget.CardView-->
-<!--        android:id="@+id/image"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:cardCornerRadius="20dp"-->
-<!--        android:layout_width="80dp"-->
-<!--        android:layout_height="80dp">-->
-<!--        <ImageView-->
-<!--            android:id="@+id/image1"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:src="@drawable/ic_launcher_background"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"/>-->
-
-
-<!--    </androidx.cardview.widget.CardView>-->
-
 
 
     <FrameLayout
@@ -95,7 +77,6 @@
         app:layout_constraintEnd_toStartOf="@id/timee"
         android:paddingStart="15dp"
         android:paddingEnd="20dp"
-        android:text="Atirgulisddddm"
         android:textColor="#2675EC"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/image"

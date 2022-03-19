@@ -17,6 +17,7 @@ import com.example.shoxgram.models.Recently
 import com.example.shoxgram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.lang.Exception
 import java.lang.StringBuilder
 import kotlin.math.log
 
@@ -107,14 +108,11 @@ class TabFragment : Fragment() {
 
                     setRecentMessage(list)
 
-                    userAdapter = UserAdapter(list, object :UserAdapter.OnItemClickListner{
+                    userAdapter = UserAdapter(list,firebaseDatabase,uid, object :UserAdapter.OnItemClickListner{
                         override fun onItemClick(user: User) {
                             var bundle = Bundle()
                             bundle.putSerializable("key",user)
                             findNavController().navigate(R.id.profileFragment,bundle)
-//                            val intent = Intent(this@RealActivity,MessageActivity::class.java)
-//                            intent.putExtra("user", user)
-//                            startActivity(intent)
                         }
 
                     })
@@ -139,24 +137,29 @@ class TabFragment : Fragment() {
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val messagesss = arrayListOf<Message>()
-                        val children = snapshot.children
-                        for (child in children) {
-                            val value = child.getValue(Message::class.java)
-//                            Log.d(TAG, "onDataChange: ${value!!.message!!.last()}")
-                            if (value!=null){
-                                messagesss.add(value)
-                            }
+                        val messages = snapshot.children
+                        try {
+                            val last = messages.last().getValue(Message::class.java)
+                            Log.d(TAG, "onDataChange: ${last!!.message}")
+                            
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                        if (messagesss.isNotEmpty()) {
-                            recently.add(
-                                Recently(
-                                    messagesss.last().message!!,
-                                    messagesss.last().date!!
-                                )
-                            )
-                        }else {
-                            recently.add(Recently("",""))
-                        }
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+//                        for (child in children) {
+//                            val value = child.getValue(Message::class.java)
+////                            Log.d(TAG, "onDataChange: ${value!!.message!!.last()}")
+//                        }
 
                       
                     }
@@ -172,6 +175,11 @@ class TabFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         reference.child("${firebaseAuth.currentUser!!.uid}/online").setValue(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        reference.child("${firebaseAuth.currentUser!!.uid}/online").setValue(false)
     }
 
     override fun onDestroy() {

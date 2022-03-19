@@ -83,11 +83,7 @@ class GroupFragment : Fragment() {
                 val gr_name = dialogView.sarlavha.text.toString()
 
                 buttonclick(gr_name)
-//                val group = Group(gr_name)
-//
-//                val key = reference.push().key
-//                reference.child(gr_name)
-//                    .setValue(group)
+
                 dialog.dismiss()
             }
 
@@ -127,38 +123,6 @@ class GroupFragment : Fragment() {
             }
 
         })
-
-
-
-//       reference.child("${firebaseAuth.currentUser!!.uid}")
-//           .addValueEventListener(object :ValueEventListener{
-//               override fun onDataChange(snapshot: DataSnapshot) {
-//                   val list = ArrayList<Group>()
-//                   val children = snapshot.children
-//                   for (child in children) {
-//                       val value = child.getValue(Group::class.java)
-//                       if (value!=null){
-//                           list.add(value)
-//                       }
-//                   }
-//                   groupAdapter = GroupAdapter(list,object:GroupAdapter.OnItemClickListner{
-//                       override fun onItemClick(user: User) {
-//
-//                       }
-//
-//                   })
-//                   binding.smsRv.adapter = groupAdapter
-//               }
-//
-//               override fun onCancelled(error: DatabaseError) {
-//
-//               }
-//
-//           })
-
-
-
-
 
 
 

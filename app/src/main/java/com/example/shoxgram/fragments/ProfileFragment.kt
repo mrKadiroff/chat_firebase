@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.shoxgram.R
 import com.example.shoxgram.adapters.MessageAdapter
 import com.example.shoxgram.databinding.FragmentProfileBinding
@@ -62,6 +63,11 @@ class ProfileFragment : Fragment() {
 
         val usercha = arguments?.getSerializable("key") as User
 
+
+        binding.back.setOnClickListener{
+            findNavController().popBackStack()
+        }
+
         Picasso.get().load(usercha.photoUrl).into(binding.image1)
         binding.namee.text = usercha.displayName
         if (usercha.online == true){
@@ -74,9 +80,9 @@ class ProfileFragment : Fragment() {
 
         binding.sendBtn.setOnClickListener {
             val m = binding.sms.text.toString()
-            val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            val simpleDateFormat = SimpleDateFormat("HH:mm")
             val date = simpleDateFormat.format(Date())
-            val message = Message(m,date, firebaseAuth.currentUser!!.uid, usercha.uid)
+            val message = Message(m,date, firebaseAuth.currentUser!!.uid, usercha.uid,usercha.photoUrl)
 
             val key = reference.push().key
             reference.child("${firebaseAuth.currentUser!!.uid}/messages/${usercha.uid}/$key")

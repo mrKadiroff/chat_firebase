@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.shoxgram.adapters.ChatAdapter
 import com.example.shoxgram.adapters.MessageAdapter
 import com.example.shoxgram.databinding.FragmentChatBinding
@@ -60,17 +61,22 @@ class ChatFragment : Fragment() {
         val groupcha = arguments?.getSerializable("chat") as Group
 
         binding.namee.text = groupcha.gr_name
+        binding.back.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
 
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         reference = firebaseDatabase.getReference("groups")
 
+        var rasm = firebaseAuth.currentUser?.photoUrl
 
         binding.sendBtn.setOnClickListener {
             val m = binding.sms.text.toString().trim()
             val simpleDateFormat = SimpleDateFormat("HH.mm")
             val date = simpleDateFormat.format(Date())
-            val message = Message(m, date, firebaseAuth.currentUser?.uid, firebaseAuth.currentUser?.displayName)
+            val message = Message(m, date, firebaseAuth.currentUser?.uid, firebaseAuth.currentUser?.displayName,rasm.toString())
 
             if (m.isNotEmpty()) {
                 for (i in 0 until groupcha?.users!!.size) {
