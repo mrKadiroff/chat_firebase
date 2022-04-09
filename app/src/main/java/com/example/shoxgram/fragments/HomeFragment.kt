@@ -3,6 +3,7 @@ package com.example.shoxgram.fragments
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +45,8 @@ class HomeFragment : Fragment() {
     )
 
     lateinit var binding: FragmentHomeBinding
+    private val TAG = "HomeFragment"
+    var token: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,7 +64,11 @@ class HomeFragment : Fragment() {
     private fun setViewPager() {
         val viewPager = binding.viewPager
         val tabLayout = binding.tabLayout
-        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle)
+        token = arguments?.getString("key")
+        Log.d(TAG, "onCreateView: $token")
+        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle,token!!)
+
+
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->

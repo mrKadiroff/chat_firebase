@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.shoxgram.HolderActivity
 import com.example.shoxgram.R
 import com.example.shoxgram.databinding.FragmentSignInBinding
 import com.example.shoxgram.utils.NetworkHelper
@@ -49,6 +50,7 @@ class SignInFragment : Fragment() {
     private val TAG = "SignInFragment"
     lateinit var auth: FirebaseAuth
     lateinit var networkHelper: NetworkHelper
+    var token: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,6 +66,9 @@ class SignInFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         networkHelper = NetworkHelper(binding.root.context)
 
+
+      token = (activity as HolderActivity).intent.extras!!.getString("key")
+        Log.d(TAG, "onCreateView: $token")
 
         binding.signIn.setOnClickListener {
 
@@ -124,7 +129,9 @@ class SignInFragment : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    findNavController().navigate(R.id.homeFragment)
+                    var bundle = Bundle()
+                    bundle.putString("key",token)
+                    findNavController().navigate(R.id.homeFragment,bundle)
 //                    val intent = Intent(this,RealActivity::class.java)
 //                    startActivity(intent)
 //                    Toast.makeText(this, user!!.displayName, Toast.LENGTH_SHORT).show()

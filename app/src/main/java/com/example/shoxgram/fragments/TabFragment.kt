@@ -33,13 +33,13 @@ private const val ARG_PARAM1 = "param1"
  */
 class TabFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var categoryID: Int? = null
+    private var token: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            categoryID = it.getInt(ARG_PARAM1)
+            token = it.getString(ARG_PARAM1)
 
         }
     }
@@ -73,8 +73,9 @@ class TabFragment : Fragment() {
             val photoUrl = currentUser?.photoUrl
             val uid = currentUser?.uid
 
-            val user = com.example.shoxgram.models.User(email,displayName,phoneNumber,photoUrl.toString(),uid!!,false)
+            val user = com.example.shoxgram.models.User(email,displayName,phoneNumber,photoUrl.toString(),uid!!,false,token)
 
+        Log.d(TAG, "onCreateView: $token")
 
         for (recent in recently) {
             if (recent.sms.isNotEmpty()){
@@ -148,20 +149,7 @@ class TabFragment : Fragment() {
                         
                         
                         
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-//                        for (child in children) {
-//                            val value = child.getValue(Message::class.java)
-////                            Log.d(TAG, "onDataChange: ${value!!.message!!.last()}")
-//                        }
 
-                      
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -198,10 +186,10 @@ class TabFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(categoryID: Int) =
+        fun newInstance(token: String) =
             TabFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(ARG_PARAM1, categoryID)
+                    putString(ARG_PARAM1, token)
 
                 }
             }

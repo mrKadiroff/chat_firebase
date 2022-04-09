@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.shoxgram.R
+import com.example.shoxgram.Retrofit.*
 import com.example.shoxgram.adapters.MessageAdapter
 import com.example.shoxgram.databinding.FragmentProfileBinding
 import com.example.shoxgram.databinding.FragmentTabBinding
@@ -16,6 +18,9 @@ import com.example.shoxgram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +54,7 @@ class ProfileFragment : Fragment() {
     lateinit var reference: DatabaseReference
     lateinit var messageAdapter: MessageAdapter
 
-
+    lateinit var apiService: ApiService
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,6 +64,11 @@ class ProfileFragment : Fragment() {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseDatabase = FirebaseDatabase.getInstance()
         reference = firebaseDatabase.getReference("users")
+
+
+        apiService =
+            ApiClient.getRetrofit("https://fcm.googleapis.com/").create(ApiService::class.java)
+
 
 
         val usercha = arguments?.getSerializable("key") as User
@@ -91,6 +101,40 @@ class ProfileFragment : Fragment() {
             reference.child("${usercha.uid}/messages/${firebaseAuth.currentUser!!.uid}/$key")
                 .setValue(message)
             binding.sms.setText("")
+
+
+            apiService.sendNotification(
+                Sender(
+                    Data(
+                        firebaseAuth.currentUser!!.uid,
+                        R.drawable.ic_launcher_foreground,
+                        m,
+                        "New Message",
+                        usercha.uid ?:""
+                    ),
+                    usercha.token ?:""
+                )
+            )
+                .enqueue(object : Callback<MyResponce> {
+                    override fun onResponse(
+                        call: Call<MyResponce>,
+                        response: Response<MyResponce>
+                    ) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(binding.root.context, "Success", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<MyResponce>, t: Throwable) {
+
+                    }
+
+                })
+
+
+
+
         }
 
         reference.child("${firebaseAuth.currentUser!!.uid}/messages/${usercha.uid}")
